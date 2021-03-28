@@ -1,9 +1,10 @@
 #include <iostream>
-#include <string>
+#include <cstring>
 #include <iomanip>
+
 using  namespace std ;
 
-int main(int argc,char *argv[]) {
+int main() {
 
     return 0;
 }
