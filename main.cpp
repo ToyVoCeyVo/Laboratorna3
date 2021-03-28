@@ -26,6 +26,9 @@ private:
     int stack_current_size;
 };
 
+int operatorCheck(char );
+
+
 void read_args(int, char**, char*);
 string shuntingYard(const string& input);
 unsigned op_preced(const char ch);
@@ -187,7 +190,7 @@ unsigned op_preced(const char ch)
         case '-':
             return 1;
     }
-    // для випадку вхідного символу '('
+    // бля випадку вхідного символу '('
     return 0;
 }
 
@@ -199,4 +202,11 @@ bool is_number(char ch)
 bool is_operator(char ch)
 {
     return (ch == '+' || ch == '-' || ch == '/' || ch == '*' || ch == '^');
+}
+
+
+int operatorCheck(char ch){
+    if(ch=='+' || ch=='-' || ch=='*' || ch=='/' || ch=='^' )
+        return 1;
+    return -1;
 }
