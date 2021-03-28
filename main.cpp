@@ -22,6 +22,10 @@ private:
 };
 
 int main() {
+    char word[] = "Hello!";
+    stack ch_stack(word);
+
+    cout << ch_stack.show_last() << endl;
 
     return 0;
 }
@@ -29,6 +33,9 @@ int main() {
 
 stack::stack (char * input_string)
 {
+    // input string will be reversed:
+    // char {H,e,l,l,o} --> stack {o,l,l,e,H}
+
     int n = strlen(input_string);
 
     tokens = new char[n];
@@ -47,9 +54,29 @@ stack::stack()
     tokens = new char[100];
 }
 
-stack ::~stack ()
+stack::~stack ()
 {
     delete[] tokens;
 }
 
+char stack::show_last()
+{
+    return tokens[stack_current_size-1];
+}
 
+char stack::pop()
+{
+    stack_current_size--;
+    return tokens[stack_current_size];
+}
+
+void stack::push_back(char symbol)
+{
+    tokens[stack_current_size] = symbol;
+    stack_current_size++;
+}
+
+int stack::size()
+{
+    return stack_current_size;
+}
