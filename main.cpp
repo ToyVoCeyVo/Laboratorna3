@@ -4,6 +4,11 @@
 
 using  namespace std ;
 
+/*
+ cd source\repos\Laboratorna3\cmake-build-debug\
+ */
+
+
 class stack
 {
 public:
@@ -20,12 +25,23 @@ private:
     char* tokens;
     int stack_current_size;
 };
+void read_args(int, char**, char*);
 
-int main() {
-    char word[] = "Hello!";
-    stack ch_stack(word);
+int main(int argc, char* argv[]) {
 
-    cout << ch_stack.show_last() << endl;
+    char expresion[100] = "";
+
+    if(argc > 1) {
+        read_args(argc, argv, expresion);
+        cout << "Your expresion: " << expresion << endl; // GET RID OF in release!
+    }else{
+        cout << "Run program from console!\n";
+        return 1;
+    }
+
+
+
+
 
     return 0;
 }
@@ -79,4 +95,10 @@ void stack::push_back(char symbol)
 int stack::size()
 {
     return stack_current_size;
+}
+
+void read_args(int argc, char** argv, char* expr){
+    for (int i = 1; i < argc; ++i) {
+        strcat(expr, argv[i]);
+    }
 }
