@@ -57,7 +57,6 @@ int main(int argc, char* argv[])
     string input(expresion);
     string output = to_pn(input);
 
-    cout << "Polish notation: " << output << endl;
     float res = vse_na_sviti(output);
     cout<<"Result : "<<res<<endl;
     return 0;
@@ -125,10 +124,8 @@ void read_args(int argc, char** argv, char* expr){
 string to_pn(string input){
     stack opers;
     string output ="";
-    char c_token;
 
     for (auto token = input.begin(); token != input.end(); ++token) {
-        cout << *token << "\t| " << output << "\t| " << opers.show_last() <<endl;
         if(is_num(*token) || (token!= input.begin() && *(token-1) == '(' && *token == '-') || (token == input.begin() && *token == '-')){
             if(*token == '-' && output.size()==2 && output[0]=='-'){
                 output.clear();
@@ -281,11 +278,10 @@ float vse_na_sviti(string input) {
         res = type_of_oper(temp1, temp2, oper);
 
         input=input.substr(0,start_ind)+input.substr(end_ind+1);
-        //input.erase(input.start()+start_ind,end_ind);
         std::ostringstream ss;
         ss<<res;
         string s(ss.str());
         input.insert(start_ind,s);
-    }/**/
-    return stof(input);//res;
+    }
+    return stof(input);
 }
