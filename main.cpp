@@ -28,7 +28,7 @@ private:
     int stack_current_size;
 };
 
-
+float type_of_oper(string one,string two,char oper);
 void reverseStr(string& );
 bool operatorCheck(char );
 float vse_na_sviti (string);
@@ -226,6 +226,28 @@ void reverseStr(string& str)
     // corners
     for (int i = 0; i < n / 2; i++)
         swap(str[i], str[n - i - 1]);
+}
+
+float type_of_oper(string temp1,string temp2,char oper){
+    float res;
+    switch (oper) {
+        case '*':
+            res = stof(temp2) * stof(temp1);
+            break;
+        case '-':
+            res = stof(temp2) - stof(temp1);
+            break;
+        case '+':
+            res = stof(temp2) + stof(temp1);
+            break;
+        case '/':
+            res = stof(temp2) / stof(temp1);
+            break;
+        case '^':
+            res = pow(stof(temp2), stof(temp1));
+            break;
+    }
+    return res;
 }
 
 
