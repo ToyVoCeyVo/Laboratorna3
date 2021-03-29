@@ -1,7 +1,9 @@
 #include <iostream>
 #include <cstring>
 #include <iomanip>
-
+#include <math.h>
+#include <sstream>
+//#include <bits/stdc++.h>
 using  namespace std ;
 
 /*
@@ -26,8 +28,10 @@ private:
     int stack_current_size;
 };
 
-int operatorCheck(char );
 
+void reverseStr(string& );
+bool operatorCheck(char );
+float vse_na_sviti (string);
 
 void read_args(int, char**, char*);
 string shuntingYard(const string& input);
@@ -38,7 +42,8 @@ bool is_operator(char ch);
 
 //---Main function---
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
 
     char expresion[100] = "";
 
@@ -55,6 +60,8 @@ int main(int argc, char* argv[]) {
     output = shuntingYard(input);
     cout << "Polish notation: " << output << endl;
 
+    float res = vse_na_sviti("1.0 + 1.0");
+    cout<<"Result : "<<res<<endl;
     return 0;
 }
 
@@ -205,8 +212,20 @@ bool is_operator(char ch)
 }
 
 
-int operatorCheck(char ch){
+bool operatorCheck(char ch){
     if(ch=='+' || ch=='-' || ch=='*' || ch=='/' || ch=='^' )
-        return 1;
-    return -1;
+        return true;
+    return false;
 }
+
+void reverseStr(string& str)
+{
+    int n = str.length();
+
+    // Swap character starting from two
+    // corners
+    for (int i = 0; i < n / 2; i++)
+        swap(str[i], str[n - i - 1]);
+}
+
+
