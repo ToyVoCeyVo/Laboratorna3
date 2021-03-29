@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 
     cout << "Polish notation: " << output << endl;
 
-    float res = vse_na_sviti("1.0 + 1.0");
+    float res = vse_na_sviti(output);
     cout<<"Result : "<<res<<endl;
     return 0;
 }
@@ -168,10 +168,12 @@ bool is_num(char c){
     if(isdigit(c) || c == '.') return 1;
     return 0;
 }
+
 bool is_oper(char c){
     if(c == '+' || c == '-' || c == '*' || c == '/' || c == '^') return 1;
     return 0;
 }
+
 int oper_prec(char c){
     switch (c) {
         case '-':
@@ -249,7 +251,7 @@ float vse_na_sviti(string input) {
         int n_ch;
         flag=false;
         for(int i = 0; i < input.size(); i++) {
-            if (operatorCheck(input[i]) and (input[i+1]==' ' or i==input.size()-1)) {
+            if (operatorCheck(input[i]) && (input[i+1]==' ' || i==input.size()-1)) {
                 oper = input[i];
                 flag=true;
                 break;
