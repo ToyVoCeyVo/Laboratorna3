@@ -1,9 +1,7 @@
 #include <iostream>
 #include <cstring>
-#include <iomanip>
-#include <math.h>
 #include <sstream>
-//#include <bits/stdc++.h>
+
 using  namespace std ;
 
 /*
@@ -14,7 +12,6 @@ using  namespace std ;
 class stack
 {
 public:
-    stack (char*);
     stack();
     ~stack ();
 
@@ -49,7 +46,6 @@ int main(int argc, char* argv[])
     char expresion[100] = "";
     if(argc > 1) {
         read_args(argc, argv, expresion);
-        cout << "Your expresion: " << expresion << endl; // GET RID OF in release!
     }else{
         cout << "Run program from console!\n";
         return 1;
@@ -58,31 +54,12 @@ int main(int argc, char* argv[])
     string input(expresion);
     string output = to_pn(input);
 
-    cout << "Polish notation: " << output << endl;
-
     float res = vse_na_sviti(output);
     cout<<"Result : "<<res<<endl;
     return 0;
 }
 
 //---realizations---
-
-stack::stack (char * input_string)
-{
-    // input string will be reversed:
-    // char {H,e,l,l,o} --> stack {o,l,l,e,H}
-
-    int n = strlen(input_string);
-
-    tokens = new char[n];
-
-    stack_current_size = 0;
-
-    for (size_t i = 0; i < n; i++, stack_current_size++)
-    {
-        tokens[stack_current_size] = input_string[n - 1 - i];
-    }
-}
 
 stack::stack()
 {
@@ -129,9 +106,6 @@ string to_pn(string input){
     char c_token;
 
     for (auto token = input.begin(); token != input.end(); ++token) {
-        cout << *token << " -> ";
-        cout << opers.show_last() << " -> ";
-        cout << output << endl;
         if(is_num(*token) || (token!= input.begin() && *(token-1) == '(' && *token == '-') || (token == input.begin() && *token == '-')){
             if((token+1) == input.end() || *(token+1) == '(' || *(token+1) == ')' || is_oper(*(token+1))){
                 output = output + *token + ' ';
@@ -143,7 +117,6 @@ string to_pn(string input){
             && ( oper_prec(opers.show_last()) > oper_prec(*token) || (oper_prec(opers.show_last()) == oper_prec(*token) && *token != '^'))
             && opers.show_last() != '('){
                 output = output + opers.pop() + ' ';
-                cout << '.';
             }
             opers.push_back(*token);
         } else if((*token) == '('){
@@ -151,7 +124,6 @@ string to_pn(string input){
         } else if((*token) == ')'){
             while(opers.show_last() != '('){
                 output = output + opers.pop() + ' ';
-                cout << '.';
             }
             opers.pop();
         }
@@ -189,17 +161,6 @@ int oper_prec(char c){
     }
     return 0;
 }
-
-bool is_number(char ch)
-{
-    return (('0' <= ch) && (ch <= '9')) || (ch == '.');
-}
-
-bool is_operator(char ch)
-{
-    return (ch == '+' || ch == '-' || ch == '/' || ch == '*' || ch == '^');
-}
-
 
 bool operatorCheck(char ch){
     if(ch=='+' || ch=='-' || ch=='*' || ch=='/' || ch=='^' )
@@ -277,7 +238,6 @@ float vse_na_sviti(string input) {
             }
         }
         reverseStr(temp1);
-        cout<<"temp1 "<<temp1<<endl;
         number_of_chars = n_ch;
 
         for (int i = number_of_chars; i >= 0; i--) {
@@ -292,19 +252,15 @@ float vse_na_sviti(string input) {
 
         start_ind=n_ch+1;
         reverseStr(temp2);
-        cout<<"temp2 "<<temp2<<endl;
 
         res = type_of_oper(temp1, temp2, oper);
 
-        cout<<input<<endl;
-        cout<<start_ind<<" "<<end_ind<<endl;
         input=input.substr(0,start_ind)+input.substr(end_ind+1);
         //input.erase(input.start()+start_ind,end_ind);
         std::ostringstream ss;
         ss<<res;
         string s(ss.str());
         input.insert(start_ind,s);
-        cout<<input<<endl;
     }/**/
     return stof(input);//res;
 }
