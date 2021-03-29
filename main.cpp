@@ -27,15 +27,18 @@ private:
 };
 
 void read_args(int, char**, char*);
-
+string to_pn(string);
+bool is_num(char);
+bool is_oper(char);
+int oper_prec(char);
 
 
 //---Main function---
 
 int main(int argc, char* argv[]) {
 
-    char expresion[100] = "1+3";
-/*
+
+    char expresion[100] = "";
     if(argc > 1) {
         read_args(argc, argv, expresion);
         cout << "Your expresion: " << expresion << endl; // GET RID OF in release!
@@ -43,10 +46,11 @@ int main(int argc, char* argv[]) {
         cout << "Run program from console!\n";
         return 1;
     }
-*/
 
     string input(expresion);
-    string output;
+    string output = to_pn(input);
+
+    cout << "Polish notation: " << output << endl;
 
     return 0;
 }
@@ -109,3 +113,67 @@ void read_args(int argc, char** argv, char* expr){
     }
 }
 
+string to_pn(string input){
+    stack opers;
+    string output ="";
+    char c_token;
+
+    for (auto token = input.begin(); token != input.end(); ++token) {
+        cout << *token << " -> ";
+        cout << opers.show_last() << " -> ";
+        cout << output << endl;
+        if(is_num(*token) || (token!= input.begin() && *(token-1) == '(' && *token == '-') || (token == input.begin() && *token == '-')){
+            if((token+1) == input.end() || *(token+1) == '(' || *(token+1) == ')' || is_oper(*(token+1))){
+                output = output + *token + ' ';
+            }else{
+                output = output + *token;
+            }
+        } else if(is_oper(*token)){
+            while(opers.size()
+            && ( oper_prec(opers.show_last()) > oper_prec(*token) || (oper_prec(opers.show_last()) == oper_prec(*token) && *token != '^'))
+            && opers.show_last() != '('){
+                output = output + opers.pop() + ' ';
+                cout << '.';
+            }
+            opers.push_back(*token);
+        } else if((*token) == '('){
+            opers.push_back(*token);
+        } else if((*token) == ')'){
+            while(opers.show_last() != '('){
+                output = output + opers.pop() + ' ';
+                cout << '.';
+            }
+            opers.pop();
+        }
+    }
+    while(opers.size()){
+        output = output + opers.pop();
+        if (opers.size())
+            output = output + ' ';
+    }
+    return output;
+}
+
+bool is_num(char c){
+    if(isdigit(c) || c == '.') return 1;
+    return 0;
+}
+bool is_oper(char c){
+    if(c == '+' || c == '-' || c == '*' || c == '/' || c == '^') return 1;
+    return 0;
+}
+int oper_prec(char c){
+    switch (c) {
+        case '-':
+            return 1;
+        case '+':
+            return 1;
+        case '*':
+            return 2;
+        case '/':
+            return 2;
+        case '^':
+            return 3;
+    }
+    return 0;
+}
