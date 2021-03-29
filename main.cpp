@@ -34,10 +34,10 @@ bool operatorCheck(char );
 float vse_na_sviti (string);
 
 void read_args(int, char**, char*);
-string shuntingYard(const string& input);
-unsigned op_preced(const char ch);
-bool is_number(char ch);
-bool is_operator(char ch);
+string to_pn(string);
+bool is_num(char);
+bool is_oper(char);
+int oper_prec(char);
 
 
 //---Main function---
@@ -45,8 +45,8 @@ bool is_operator(char ch);
 int main(int argc, char* argv[])
 {
 
-    char expresion[100] = "";
 
+    char expresion[100] = "";
     if(argc > 1) {
         read_args(argc, argv, expresion);
         cout << "Your expresion: " << expresion << endl; // GET RID OF in release!
@@ -56,8 +56,8 @@ int main(int argc, char* argv[])
     }
 
     string input(expresion);
-    string output;
-    output = shuntingYard(input);
+    string output = to_pn(input);
+
     cout << "Polish notation: " << output << endl;
 
     float res = vse_na_sviti("1.0 + 1.0");
@@ -123,81 +123,68 @@ void read_args(int argc, char** argv, char* expr){
     }
 }
 
-//алгоритм сортувальної станції
-string shuntingYard(const string& input)
-{
-    stack operators;
-    string output("");
-    unsigned length = input.length();
-    for (unsigned i = 0; i < length; ++i)
-    {
-        //перевірка чи вхідний символ є частиною числа(врахування унарного  '-')
-        if (is_number(input[i]) || (input[i] == '-' && i == 0) || (i > 0 && input[i-1] == '(' && input[i] == '-'))
-        {
-            //перевірка це останній символ числа,щоб поставити після нього пробіл
-            if(i + 1 == length || is_operator(input[i+1]) || input[i+1] == '(' || input[i+1] == ')')
-            {
-                output = output + input[i] + ' ';
+string to_pn(string input){
+    stack opers;
+    string output ="";
+    char c_token;
+
+    for (auto token = input.begin(); token != input.end(); ++token) {
+        cout << *token << " -> ";
+        cout << opers.show_last() << " -> ";
+        cout << output << endl;
+        if(is_num(*token) || (token!= input.begin() && *(token-1) == '(' && *token == '-') || (token == input.begin() && *token == '-')){
+            if((token+1) == input.end() || *(token+1) == '(' || *(token+1) == ')' || is_oper(*(token+1))){
+                output = output + *token + ' ';
+            }else{
+                output = output + *token;
             }
-            else
-            {
-                output = output + input[i];
+        } else if(is_oper(*token)){
+            while(opers.size()
+            && ( oper_prec(opers.show_last()) > oper_prec(*token) || (oper_prec(opers.show_last()) == oper_prec(*token) && *token != '^'))
+            && opers.show_last() != '('){
+                output = output + opers.pop() + ' ';
+                cout << '.';
             }
-        }
-        else if (input[i] == '(')
-        {
-            operators.push_back('(');
-        }
-        else if (input[i] == ')')
-        {
-            while (operators.show_last() != '(')
-            {
-                output = output + operators.pop()+ ' ';
+            opers.push_back(*token);
+        } else if((*token) == '('){
+            opers.push_back(*token);
+        } else if((*token) == ')'){
+            while(opers.show_last() != '('){
+                output = output + opers.pop() + ' ';
+                cout << '.';
             }
-            operators.pop();
-        }
-        else if (is_operator(input[i]))
-        {
-            while (!operators.size()==0 && (op_preced(operators.show_last()) >= op_preced(input[i])))
-            {
-                output = output + operators.pop() + ' ';
-            }
-            operators.push_back(input[i]);
-        }
-        else
-        {
-            //помилка вхідних даних
-            throw "Помилка вхідних даних";
+            opers.pop();
         }
     }
-    //виводимо символи що залишились у стеку
-    unsigned stackSize = operators.size();
-    if (stackSize > 0)
-    {
-        for (unsigned i = 0; i < stackSize - 1; ++i)
-        {
-            output = output + operators.pop() + ' ';
-        }
-        output = output + operators.pop();
+    while(opers.size()){
+        output = output + opers.pop();
+        if (opers.size())
+            output = output + ' ';
     }
     return output;
 }
 
-
-unsigned op_preced(const char ch)
-{
-    switch(ch)
-    {
-        case '^':
-            return 3;
-        case '*':
-        case '/':
-            return 2;
-        case '+':
+bool is_num(char c){
+    if(isdigit(c) || c == '.') return 1;
+    return 0;
+}
+bool is_oper(char c){
+    if(c == '+' || c == '-' || c == '*' || c == '/' || c == '^') return 1;
+    return 0;
+}
+int oper_prec(char c){
+    switch (c) {
         case '-':
             return 1;
+        case '+':
+            return 1;
+        case '*':
+            return 2;
+        case '/':
+            return 2;
+        case '^':
+            return 3;
     }
-    // бля випадку вхідного символу '('
     return 0;
 }
 
