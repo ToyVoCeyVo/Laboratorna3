@@ -250,4 +250,72 @@ float type_of_oper(string temp1,string temp2,char oper){
     return res;
 }
 
+float vse_na_sviti(string input) {
 
+    bool flag=true;
+    while (flag) {
+        string temp1 = "", temp2 = "";
+        int end_ind, start_ind;
+        float res;
+        char oper;
+        int number_of_chars = 0, number_of_spaces = 0;
+        int n_ch;
+        flag=false;
+        for(int i = 0; i < input.size(); i++) {
+            if (operatorCheck(input[i]) and (input[i+1]==' ' or i==input.size()-1)) {
+                oper = input[i];
+                flag=true;
+                break;
+
+            }
+            number_of_chars++;
+        }
+
+        if(flag==false)
+            break;
+
+        end_ind = number_of_chars;
+        number_of_chars -= 2;
+        n_ch = number_of_chars;
+
+        for (int i = number_of_chars; i > 0; i--) {
+            if (input[i] != ' ') {
+                temp1 += input[i];
+                n_ch--;
+            } else {
+                n_ch--;
+                break;
+            }
+        }
+        reverseStr(temp1);
+        cout<<"temp1 "<<temp1<<endl;
+        number_of_chars = n_ch;
+
+        for (int i = number_of_chars; i >= 0; i--) {
+            if (input[i] != ' ') {
+                temp2 += input[i];
+                n_ch--;
+            } else {
+
+                break;
+            }
+        }
+
+        start_ind=n_ch+1;
+        reverseStr(temp2);
+        cout<<"temp2 "<<temp2<<endl;
+
+        res = type_of_oper(temp1, temp2, oper);
+
+        cout<<input<<endl;
+        cout<<start_ind<<" "<<end_ind<<endl;
+        input=input.substr(0,start_ind)+input.substr(end_ind+1);
+        //input.erase(input.start()+start_ind,end_ind);
+        std::ostringstream ss;
+        ss<<res;
+        string s(ss.str());
+        input.insert(start_ind,s);
+        cout<<input<<endl;
+    }/**/
+    return stof(input);//res;
+}
