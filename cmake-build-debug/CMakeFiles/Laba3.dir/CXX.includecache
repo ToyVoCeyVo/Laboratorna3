@@ -11,10 +11,6 @@ iostream
 -
 cstring
 -
-iomanip
--
-math.h
--
 sstream
 -
 

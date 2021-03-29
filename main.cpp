@@ -23,6 +23,9 @@ public:
 private:
     char* tokens;
     int stack_current_size;
+    int max_size;
+
+    void expend();
 };
 
 float type_of_oper(string one,string two,char oper);
@@ -54,6 +57,7 @@ int main(int argc, char* argv[])
     string input(expresion);
     string output = to_pn(input);
 
+    cout << "Polish notation: " << output << endl;
     float res = vse_na_sviti(output);
     cout<<"Result : "<<res<<endl;
     return 0;
@@ -64,7 +68,8 @@ int main(int argc, char* argv[])
 stack::stack()
 {
     stack_current_size = 0;
-    tokens = new char[100];
+    max_size = 3;
+    tokens = new char[max_size];
 }
 
 stack::~stack ()
@@ -87,11 +92,28 @@ void stack::push_back(char symbol)
 {
     tokens[stack_current_size] = symbol;
     stack_current_size++;
+    if(stack_current_size > 0.8 * max_size){
+        expend();
+    }
 }
 
 int stack::size()
 {
     return stack_current_size;
+}
+
+void stack::expend() {
+    char *temp;
+    max_size*=2;
+
+    temp = new char[max_size];
+
+    for (int i = 0; i < stack_current_size; ++i) {
+        temp[i]=tokens[i];
+    }
+
+    delete[] tokens;
+    tokens = temp;
 }
 
 void read_args(int argc, char** argv, char* expr){
@@ -106,8 +128,11 @@ string to_pn(string input){
     char c_token;
 
     for (auto token = input.begin(); token != input.end(); ++token) {
+        cout << *token << "\t| " << output << "\t| " << opers.show_last() <<endl;
         if(is_num(*token) || (token!= input.begin() && *(token-1) == '(' && *token == '-') || (token == input.begin() && *token == '-')){
-            if((token+1) == input.end() || *(token+1) == '(' || *(token+1) == ')' || is_oper(*(token+1))){
+            if(*token == '-' && output.size()==2 && output[0]=='-'){
+                output.clear();
+            }else if((token+1) == input.end() || *(token+1) == '(' || *(token+1) == ')' || is_oper(*(token+1))){
                 output = output + *token + ' ';
             }else{
                 output = output + *token;
